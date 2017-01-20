@@ -2,8 +2,7 @@
 #   Basic interface for FOAAS.com
 #
 # Commands
-#   fu <object> - tells <object> to f off with random response from FOASS
-#   fu - express displeasure with random response from FOASS
+#   insult|berate|piss on|trash|slam|bash|belittle|offend|castigate <object> - tells <object> to f off  with random response from FOAAS
 #
 # Dependencies:
 #   None
@@ -13,24 +12,46 @@
 
 
 module.exports = (robot) ->
-  robot.hear /^fu(?:\s)(?=([\w ]+))/i, (msg) ->
+  robot.respond /(insult|berate|piss on|trash|slam|bash|belittle|offend|castigate) (.*)/i, (msg) ->
     options = [
       'off',
       'you',
+      'ing',
       'donut',
-      'shakespeare',
-      'linus',
       'king',
       'chainsaw',
       'outside',
-      'madison',
-      'nugget',
-      'yoda'
+      'yoda',
+      'shutup'
+      'family'
+      'think',
+      'back',
+      'keep',
+      'look',
+      'thinking',
+      'bag',
+      'too',
+      'horse',
+      'blackadder',
+      'deraadt'
+
     ]
 
-    from = msg.message.user.name
+    from = "Coleman"
 
-    to = msg.match[1]
+    to = msg.match[2].trim()
+
+    robotName = /(coleman)/i
+
+    if msg.message.user.real_name
+      realName = msg.message.user.real_name.split " ", 1
+    else
+      realName = msg.message.user.name
+
+    if to.match robotName
+      msg.send "I'm sorry, #{realName}. I'm afraid I can't do that."
+      return
+
 
     if to
       options.push(to)
@@ -38,6 +59,8 @@ module.exports = (robot) ->
       if random_fu is to
         # if our random fu matched to, call /to/from
         url = "http://foaas.com/#{random_fu}/#{from}/"
+      else if random_fu in ['family', 'maybe', 'horse', 'too', 'bag', 'bucket', 'sake', 'give', 'no', 'looking', 'single', 'zayn', 'awesome', 'bye', 'beacuse', 'what', 'cool', 'flying', 'thing', 'life', 'pink', 'this', 'that', 'everything', 'everyone']
+          url = "http://foaas.com/#{random_fu}/#{from}/"
       else
         # else use default /option/to/from
         url = "http://foaas.com/#{random_fu}/#{to}/#{from}/"
@@ -67,6 +90,10 @@ module.exports = (robot) ->
       .get() (err, res, body) ->
         try
           json = JSON.parse body
-          msg.send "#{json.message}\n#{json.subtitle}"
+          if random_fu in ['family','horse', 'too', 'bag', 'bucket', 'sake', 'give', 'no', 'looking', 'single', 'zayn', 'awesome', 'bye', 'beacuse', 'what', 'cool', 'flying', 'thing', 'life', 'pink', 'this', 'that', 'everything', 'everyone']
+              msg.send "#{to}, #{json.message}"
+          else
+            msg.send "#{json.message}"
+          #msg.send "#{json.message}\n#{json.subtitle}"
         catch error
           msg.send "Fuck this error!"
